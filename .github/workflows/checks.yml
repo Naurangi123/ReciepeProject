@@ -14,10 +14,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Run Test
+      - name: Test
         run: docker-compose run --rm app sh -c "python manage.py test"
         continue-on-error: false
-      - name: Lint Code
+      - name: Lint
         run: docker-compose run --rm app sh -c "flake8"
         continue-on-error: false
 
