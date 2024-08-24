@@ -1,48 +1,61 @@
-# Use the official Python image with Alpine Linux
+
+# FROM python:3.12-alpine
+# LABEL maintainer="naurangi"
+
+
+# ENV PYTHONUNBUFFERED=1
+# ENV PATH="/py/bin:$PATH"
+
+# COPY ./requirements.txt .
+# COPY ./requirements.dev.txt .
+# COPY ./app /app
+# WORKDIR /app
+# EXPOSE 8000
+
+
+
+
+# ARG DEV=false
+
+# RUN python -m venv /py
+# RUN /py/bin/pip install --upgrade pip
+# RUN apk add --update --no-cache postgresql-client
+# RUN apk add --update --virtual build-deps \
+#         build-base postgresql-dev musl-dev
+# RUN pip install psycopg2 
+# RUN /py/bin/pip install -r requirements.txt 
+# RUN if [ "$DEV" = "true" ]; then /py/bin/pip install -r requirements.dev.txt; fi 
+
+# # Install additional tools
+# RUN apk del build-deps
+
+# # Create and use a non-root user
+# RUN adduser -D -H django-user
+# USER django-user
+
 FROM python:3.12-alpine
 LABEL maintainer="naurangi"
 
-# Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/py/bin:$PATH"
 
-# Create a virtual environment
-RUN python -m venv /py
-
-# Upgrade pip
-RUN /py/bin/pip install --upgrade pip
-
-RUN /py/bin/pip install --upgrade pip setuptools wheel
-
-# Copy requirements files into the container
-COPY requirements.txt .
-COPY requirements.dev.txt .
-
-# Install runtime dependencies
-RUN /py/bin/pip install -r requirements.txt
-
-# Install development tools and additional dependencies if needed
-ARG DEV=false
-RUN apk add --no-cache --virtual .tmp-build-deps \
-    build-base \
-    postgresql-dev \
-    musl-dev \
-    && if [ "$DEV" = "true" ]; then /py/bin/pip install -r requirements.dev.txt; fi \
-    && apk del .tmp-build-deps
-
-# Install additional tools
-RUN apk add --no-cache postgresql-client
-
-# Copy application code into the container
-COPY ./app /app
-
-# Set working directory
-WORKDIR /app
-
-# Expose port 8000
-EXPOSE 8000
-
 # Create and use a non-root user
 RUN adduser -D -H django-user
-USER django-user
 
+# Set work directory and copy necessary files
+WORKDIR /app
+COPY ./requirements.txt ./requirements.dev.txt ./app /app/
+
+# Install dependencies and tools
+RUN python -m venv /py \
+    && /py/bin/pip install --upgrade pip \
+    && apk add --update --no-cache postgresql-client \
+    && apk add --update --virtual build-deps build-base postgresql-dev musl-dev \
+    && /py/bin/pip install psycopg2 \
+    && /py/bin/pip install -r requirements.txt \
+    && if [ $DEV = "true" ]; then /py/bin/pip install -r requirements.dev.txt; fi \
+    && apk del build-deps
+
+EXPOSE 8000
+
+USER django-user
