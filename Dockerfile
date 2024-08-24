@@ -1,37 +1,4 @@
 
-# FROM python:3.12-alpine
-# LABEL maintainer="naurangi"
-
-
-# ENV PYTHONUNBUFFERED=1
-# ENV PATH="/py/bin:$PATH"
-
-# COPY ./requirements.txt .
-# COPY ./requirements.dev.txt .
-# COPY ./app /app
-# WORKDIR /app
-# EXPOSE 8000
-
-
-
-
-# ARG DEV=false
-
-# RUN python -m venv /py
-# RUN /py/bin/pip install --upgrade pip
-# RUN apk add --update --no-cache postgresql-client
-# RUN apk add --update --virtual build-deps \
-#         build-base postgresql-dev musl-dev
-# RUN pip install psycopg2 
-# RUN /py/bin/pip install -r requirements.txt 
-# RUN if [ "$DEV" = "true" ]; then /py/bin/pip install -r requirements.dev.txt; fi 
-
-# # Install additional tools
-# RUN apk del build-deps
-
-# # Create and use a non-root user
-# RUN adduser -D -H django-user
-# USER django-user
 
 FROM python:3.12-alpine
 LABEL maintainer="naurangi"
