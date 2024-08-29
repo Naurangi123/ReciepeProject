@@ -12,19 +12,7 @@ class UserManager(BaseUserManager):
     """Manager for user accounts."""
 
     def create_user(self, email, password=None, **extra_fields):
-        """Create and return a regular user with an email and password.
-
-        Args:
-            email (str): The email address of the user.
-            password (str, optional): The password for the user. Defaults to None.
-            **extra_fields: Additional fields to include.
-
-        Raises:
-            ValueError: If the email is not provided.
-
-        Returns:
-            User: The created user.
-        """
+        """Create and return a regular user with an email and password."""
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
@@ -34,15 +22,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None):
-        """Create and return a superuser with an email and password.
-
-        Args:
-            email (str): The email address of the superuser.
-            password (str, optional): The password for the superuser. Defaults to None.
-
-        Returns:
-            User: The created superuser.
-        """
+        """Create and return a superuser with an email and password."""
         user = self.create_user(email, password)
         user.is_staff = True
         user.is_superuser = True
@@ -54,6 +34,7 @@ class User(AbstractUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    username = models.CharField(max_length=150, unique=True, null=False, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
