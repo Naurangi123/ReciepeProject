@@ -19,6 +19,8 @@ RUN python -m venv /py \
     && apk add --update --no-cache postgresql-client \
     && apk add --update --virtual build-deps build-base postgresql-dev musl-dev \
     && /py/bin/pip install psycopg2 \
+    && /py/bin/pip install flake8 \
+    && /py/bin/pip install drf-spectacular \
     && /py/bin/pip install -r requirements.txt \
     && if [ $DEV = "true" ]; then /py/bin/pip install -r requirements.dev.txt; fi \
     && apk del build-deps
