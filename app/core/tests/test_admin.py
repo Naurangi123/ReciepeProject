@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.test import Client
 
 class AdminSiteTest(TestCase):
+    
 
     def setUp(self):
         # Create an admin user
@@ -20,7 +21,6 @@ class AdminSiteTest(TestCase):
             password='testpass123',
             name='Test User',
         )
-
     def test_users_list(self):
         url = reverse('admin:core_user_changelist')
         res = self.client.get(url)

@@ -15,7 +15,7 @@ def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
 
-class PublicuserApiTests(TestCase):
+class PublicUserApiTests(TestCase):
     
     def setUp(self):
         self.client=APIClient()
@@ -91,10 +91,17 @@ class PublicuserApiTests(TestCase):
         self.assertEqual(res.status_code,status.HTTP_400_BAD_REQUEST)
         
         
-    def test_retrieve_user_unauthorized(self):
-        res=self.client.get(ME_URL)
+    # def test_retrieve_user_unauthorized(self):
+    #     res=self.client.get(ME_URL)
         
-        self.assertEqual(res.status_code,status.HTTP_401_UNAUTHORIZED)        
+    #     self.assertEqual(res.status_code,status.HTTP_401_UNAUTHORIZED)
+    
+    def test_retrieve_user_unauthorized(self):
+    # Ensure user is not logged in
+        self.client.logout() 
+        res = self.client.get(ME_URL)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        
         
 
 class PrivateUserApiTests(TestCase):
@@ -119,6 +126,7 @@ class PrivateUserApiTests(TestCase):
     def test_post_me_not_allowed(self):
         res=self.client.post(ME_URL,{})
         self.assertEqual(res.status_code,status.HTTP_405_METHOD_NOT_ALLOWED)
+
         
     def test_update_user_profile(self):
         payload = {
